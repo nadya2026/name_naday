@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مزيل التكرار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F3EE;
+    --surface: #FDFCFA;
+    --surface-2: #EFEDE8;
+    --border: #DDD9D0;
+    --border-light: #E8E5DF;
+    --text-primary: #1A1916;
+    --text-secondary: #6B6760;
+    --text-muted: #9E9B95;
+    --accent: #1A1916;
+    --accent-success: #2D6A4F;
+    --accent-danger: #9B2335;
+    --success-bg: #EAF3EE;
+    --danger-bg: #F8ECEE;
+    --neutral-bg: #EDEAE4;
+    --font: 'IBM Plex Sans Arabic', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    font-family: var(--font);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 48px 24px 64px;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .header-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--text-primary);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .header-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--surface);
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  /* Main card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 580px;
+    overflow: hidden;
+  }
+
+  .card-section {
+    padding: 28px 32px;
+  }
+
+  .card-section + .card-section {
+    border-top: 1px solid var(--border-light);
+  }
+
+  /* Field label */
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  /* Textarea */
+  textarea {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.8;
+    resize: none;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    direction: rtl;
+  }
+
+  textarea:focus {
+    border-color: var(--text-primary);
+    background: var(--surface);
+  }
+
+  textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  textarea[readonly] {
+    background: var(--surface-2);
+    cursor: default;
+    color: var(--text-primary);
+  }
+
+  .field-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  /* Actions bar */
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 32px;
+    background: var(--surface-2);
+    border-top: 1px solid var(--border-light);
+    justify-content: flex-end;
+  }
+
+  .btn {
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn:hover { background: var(--neutral-bg); border-color: var(--text-muted); }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: var(--text-primary);
+    color: var(--surface);
+    border-color: var(--text-primary);
+  }
+
+  .btn-primary:hover { background: #2E2C28; border-color: #2E2C28; }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    transform: none;
+  }
+
+  /* Stats row */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .stat-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+  }
+
+  .stat-number.success { color: var(--accent-success); }
+  .stat-number.danger  { color: var(--accent-danger); }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Divider with label */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .section-divider span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-light);
+  }
+
+  /* Result header row */
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  /* Copy feedback */
+  .copy-feedback {
+    font-size: 12px;
+    color: var(--accent-success);
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+
+  .copy-feedback.show { opacity: 1; }
+
+  /* Results section initially hidden */
+  #results-section { display: none; }
+
+  /* Subtle badge */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: var(--success-bg);
+    color: var(--accent-success);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 32px 16px 48px; }
+    .card-section { padding: 22px 20px; }
+    .actions { padding: 16px 20px; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-number { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-icon">
+    <svg viewBox="0 0 24 24">
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+      <path d="M17.5 14v7M14 17.5h7" stroke-width="1.8"/>
+    </svg>
+  </div>
+  <h1>مزيل التكرار</h1>
+  <p>أدخل الأسماء واحصل على قائمة نظيفة بدون تكرار</p>
+</header>
+
+<main class="card">
+
+  <!-- Input section -->
+  <div class="card-section">
+    <label class="field-label" for="input">الأسماء المدخلة</label>
+    <textarea id="input" rows="8" placeholder="أحمد&#10;محمد&#10;أحمد&#10;سارة&#10;محمد&#10;علي&#10;سارة&#10;خالد"></textarea>
+    <p class="field-hint">كل اسم في سطر منفصل، أو مفصولة بفاصلة</p>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <button class="btn" onclick="clearAll()">مسح الكل</button>
+    <button class="btn btn-primary" onclick="dedupe()">إزالة التكرار</button>
+  </div>
+
+  <!-- Results section -->
+  <div id="results-section">
+
+    <!-- Stats -->
+    <div class="card-section">
+      <label class="field-label">ملخص العملية</label>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-number" id="stat-total">—</div>
+          <div class="stat-label">إجمالي</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number success" id="stat-unique">—</div>
+          <div class="stat-label">فريدة</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number danger" id="stat-removed">—</div>
+          <div class="stat-label">محذوفة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output -->
+    <div class="card-section">
+      <div class="result-header">
+        <label class="field-label" style="margin-bottom:0;" for="output">النتيجة النهائية</label>
+        <span class="badge" id="unique-badge">0 اسم</span>
+      </div>
+      <textarea id="output" rows="8" readonly></textarea>
+      <div class="copy-feedback" id="copy-msg">تم النسخ بنجاح</div>
+    </div>
+
+    <!-- Copy action -->
+    <div class="actions">
+      <button class="btn btn-primary" id="copy-btn" onclick="copyResult()">نسخ القائمة كاملة</button>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">أداة بسيطة · تعمل محلياً في المتصفح · لا يُرسل أي بيانات</footer>
+
+<script>
+  function dedupe() {
+    const raw = document.getElementById('input').value.trim();
+    if (!raw) return;
+
+    let names = raw.includes(',') ? raw.split(',') : raw.split('\n');
+    names = names.map(n => n.trim()).filter(n => n.length > 0);
+
+    const total = names.length;
+    const seen = new Map();
+    names.forEach(n => { const k = n.toLowerCase(); if (!seen.has(k)) seen.set(k, n); });
+    const unique = [...seen.values()];
+    const removed = total - unique.length;
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-unique').textContent = unique.length;
+    document.getElementById('stat-removed').textContent = removed;
+    document.getElementById('unique-badge').textContent = unique.length + ' اسم';
+    document.getElementById('output').value = unique.join('\n');
+    document.getElementById('results-section').style.display = 'block';
+    document.getElementById('copy-msg').classList.remove('show');
+  }
+
+  function copyResult() {
+    const out = document.getElementById('output');
+    out.select();
+    document.execCommand('copy');
+    const msg = document.getElementById('copy-msg');
+    msg.classList.add('show');
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'تم النسخ ✓';
+    setTimeout(() => {
+      msg.classList.remove('show');
+      btn.textContent = 'نسخ القائمة كاملة';
+    }, 2200);
+  }
+
+  function clearAll() {
+    document.getElementById('input').value = '';
+    document.getElementById('output').value = '';
+    document.getElementById('results-section').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
