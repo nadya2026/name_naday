@@ -10,29 +10,26 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #F5F3EE;
-    --surface: #FDFCFA;
-    --surface-2: #EFEDE8;
-    --border: #DDD9D0;
-    --border-light: #E8E5DF;
-    --text-primary: #1A1916;
-    --text-secondary: #6B6760;
-    --text-muted: #9E9B95;
-    --accent: #1A1916;
-    --accent-success: #2D6A4F;
-    --accent-danger: #9B2335;
-    --success-bg: #EAF3EE;
-    --danger-bg: #F8ECEE;
-    --neutral-bg: #EDEAE4;
+    --bg: #F0EDE6;
+    --surface: #FAFAF8;
+    --surface-2: #EEEAE3;
+    --border: #D8D4CB;
+    --border-light: #E4E0D8;
+    --text-primary: #18170F;
+    --text-secondary: #6A6760;
+    --text-muted: #A09D97;
+    --accent-success: #1E5C3A;
+    --accent-danger: #8C1F2E;
+    --success-bg: #E3F0E9;
+    --danger-bg: #F5E6E9;
+    --neutral-bg: #E8E4DC;
     --font: 'IBM Plex Sans Arabic', sans-serif;
-    --radius: 10px;
-    --radius-lg: 16px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+    --radius: 12px;
+    --radius-lg: 20px;
   }
 
   html, body {
-    height: 100%;
+    min-height: 100%;
     background: var(--bg);
     font-family: var(--font);
     color: var(--text-primary);
@@ -44,84 +41,79 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding: 48px 24px 64px;
-    min-height: 100vh;
+    padding: 56px 20px 72px;
   }
 
-  /* Header */
+  /* ── Header ── */
   .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 36px;
+    animation: fadeUp 0.5s ease both;
   }
 
   .header-icon {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     background: var(--text-primary);
-    border-radius: 14px;
+    border-radius: 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   .header-icon svg {
-    width: 24px;
-    height: 24px;
-    stroke: var(--surface);
-    fill: none;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    width: 26px; height: 26px;
+    stroke: #FAFAF8; fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
   }
 
   .header h1 {
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text-primary);
+    font-size: 24px; font-weight: 600;
+    letter-spacing: -0.025em;
     margin-bottom: 6px;
   }
 
   .header p {
     font-size: 14px;
     color: var(--text-secondary);
-    font-weight: 400;
   }
 
-  /* Main card */
+  /* ── Card ── */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    width: 100%;
-    max-width: 580px;
+    width: 100%; max-width: 600px;
     overflow: hidden;
+    animation: fadeUp 0.5s 0.1s ease both;
   }
 
-  .card-section {
-    padding: 28px 32px;
+  /* ── Section ── */
+  .section {
+    padding: 28px 30px;
   }
 
-  .card-section + .card-section {
+  .section + .section,
+  .section + .actions-bar,
+  .actions-bar + .section {
     border-top: 1px solid var(--border-light);
   }
 
-  /* Field label */
-  .field-label {
+  /* ── Field label ── */
+  .label {
+    display: block;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.09em;
     text-transform: uppercase;
     color: var(--text-muted);
-    display: block;
     margin-bottom: 10px;
   }
 
-  /* Textarea */
+  /* ── Textarea ── */
   textarea {
+    display: block;
     width: 100%;
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -130,11 +122,12 @@
     font-family: var(--font);
     font-size: 14px;
     color: var(--text-primary);
-    line-height: 1.8;
-    resize: none;
+    line-height: 1.85;
+    resize: vertical;
     outline: none;
     transition: border-color 0.15s, background 0.15s;
     direction: rtl;
+    min-height: 160px;
   }
 
   textarea:focus {
@@ -142,49 +135,55 @@
     background: var(--surface);
   }
 
-  textarea::placeholder {
-    color: var(--text-muted);
-  }
+  textarea::placeholder { color: var(--text-muted); }
 
   textarea[readonly] {
     background: var(--surface-2);
     cursor: default;
-    color: var(--text-primary);
+    resize: none;
   }
 
-  .field-hint {
+  .hint {
     font-size: 12px;
     color: var(--text-muted);
     margin-top: 8px;
   }
 
-  /* Actions bar */
-  .actions {
+  /* ── Actions bar ── */
+  .actions-bar {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 20px 32px;
-    background: var(--surface-2);
-    border-top: 1px solid var(--border-light);
     justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 30px;
+    background: var(--surface-2);
   }
 
+  /* ── Buttons ── */
   .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     font-family: var(--font);
     font-size: 13px;
     font-weight: 500;
-    padding: 9px 20px;
+    padding: 10px 22px;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.13s, border-color 0.13s, transform 0.1s, opacity 0.13s;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    /* Fix: explicit border & background so buttons always show */
+    border: 1.5px solid var(--border);
     background: var(--surface);
     color: var(--text-primary);
-    cursor: pointer;
-    transition: background 0.12s, border-color 0.12s, transform 0.1s;
-    letter-spacing: 0.01em;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .btn:hover { background: var(--neutral-bg); border-color: var(--text-muted); }
-  .btn:active { transform: scale(0.98); }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.38; cursor: default; pointer-events: none; }
 
   .btn-primary {
     background: var(--text-primary);
@@ -192,75 +191,54 @@
     border-color: var(--text-primary);
   }
 
-  .btn-primary:hover { background: #2E2C28; border-color: #2E2C28; }
-
-  .btn:disabled {
-    opacity: 0.4;
-    cursor: default;
-    transform: none;
+  .btn-primary:hover {
+    background: #2A2920;
+    border-color: #2A2920;
   }
 
-  /* Stats row */
+  .btn svg {
+    width: 15px; height: 15px;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+
+  /* ── Stats ── */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
 
   .stat-box {
     background: var(--surface-2);
     border: 1px solid var(--border-light);
     border-radius: var(--radius);
-    padding: 16px;
+    padding: 18px 12px;
     text-align: center;
   }
 
-  .stat-number {
-    font-size: 28px;
+  .stat-num {
+    font-size: 30px;
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
     line-height: 1;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     color: var(--text-primary);
   }
 
-  .stat-number.success { color: var(--accent-success); }
-  .stat-number.danger  { color: var(--accent-danger); }
+  .stat-num.ok   { color: var(--accent-success); }
+  .stat-num.bad  { color: var(--accent-danger); }
 
-  .stat-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  /* Divider with label */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .section-divider span {
+  .stat-lbl {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--text-muted);
-    white-space: nowrap;
   }
 
-  .section-divider::before,
-  .section-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border-light);
-  }
-
-  /* Result header row */
+  /* ── Result header ── */
   .result-header {
     display: flex;
     align-items: center;
@@ -268,47 +246,54 @@
     margin-bottom: 10px;
   }
 
-  /* Copy feedback */
-  .copy-feedback {
-    font-size: 12px;
-    color: var(--accent-success);
-    font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.2s;
-    margin-top: 8px;
-  }
-
-  .copy-feedback.show { opacity: 1; }
-
-  /* Results section initially hidden */
-  #results-section { display: none; }
-
-  /* Subtle badge */
   .badge {
-    display: inline-block;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 100px;
     background: var(--success-bg);
     color: var(--accent-success);
+    border: 1px solid #b8dfc8;
   }
 
-  /* Footer */
+  /* ── Copy feedback ── */
+  .copy-ok {
+    font-size: 12px;
+    color: var(--accent-success);
+    font-weight: 500;
+    margin-top: 8px;
+    height: 16px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .copy-ok.show { opacity: 1; }
+
+  /* ── Hidden section ── */
+  #results { display: none; }
+
+  /* ── Footer ── */
   .footer {
     margin-top: 28px;
     font-size: 12px;
     color: var(--text-muted);
     text-align: center;
+    animation: fadeUp 0.5s 0.2s ease both;
   }
 
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Mobile ── */
   @media (max-width: 480px) {
-    body { padding: 32px 16px 48px; }
-    .card-section { padding: 22px 20px; }
-    .actions { padding: 16px 20px; }
-    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .stat-number { font-size: 22px; }
+    body { padding: 36px 14px 56px; }
+    .section { padding: 22px 18px; }
+    .actions-bar { padding: 14px 18px; flex-wrap: wrap; }
+    .btn { padding: 10px 16px; font-size: 13px; }
+    .stat-num { font-size: 24px; }
   }
 </style>
 </head>
@@ -317,10 +302,10 @@
 <header class="header">
   <div class="header-icon">
     <svg viewBox="0 0 24 24">
-      <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-      <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-      <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-      <path d="M17.5 14v7M14 17.5h7" stroke-width="1.8"/>
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/>
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/>
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/>
+      <path d="M17.25 13.5v7.5M13.5 17.25h7.5"/>
     </svg>
   </div>
   <h1>مزيل التكرار</h1>
@@ -329,54 +314,63 @@
 
 <main class="card">
 
-  <!-- Input section -->
-  <div class="card-section">
-    <label class="field-label" for="input">الأسماء المدخلة</label>
-    <textarea id="input" rows="8" placeholder="أحمد&#10;محمد&#10;أحمد&#10;سارة&#10;محمد&#10;علي&#10;سارة&#10;خالد"></textarea>
-    <p class="field-hint">كل اسم في سطر منفصل، أو مفصولة بفاصلة</p>
+  <!-- Input -->
+  <div class="section">
+    <label class="label" for="input">الأسماء المدخلة</label>
+    <textarea id="input" placeholder="أحمد&#10;محمد&#10;أحمد&#10;سارة&#10;محمد&#10;علي&#10;سارة&#10;خالد"></textarea>
+    <p class="hint">كل اسم في سطر منفصل، أو مفصولة بفاصلة</p>
   </div>
 
-  <!-- Action buttons -->
-  <div class="actions">
-    <button class="btn" onclick="clearAll()">مسح الكل</button>
-    <button class="btn btn-primary" onclick="dedupe()">إزالة التكرار</button>
+  <!-- Buttons -->
+  <div class="actions-bar">
+    <button class="btn" type="button" onclick="clearAll()">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+      مسح الكل
+    </button>
+    <button class="btn btn-primary" type="button" onclick="dedupe()">
+      <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+      إزالة التكرار
+    </button>
   </div>
 
-  <!-- Results section -->
-  <div id="results-section">
+  <!-- Results -->
+  <div id="results">
 
     <!-- Stats -->
-    <div class="card-section">
-      <label class="field-label">ملخص العملية</label>
+    <div class="section">
+      <span class="label">ملخص العملية</span>
       <div class="stats-grid">
         <div class="stat-box">
-          <div class="stat-number" id="stat-total">—</div>
-          <div class="stat-label">إجمالي</div>
+          <div class="stat-num" id="s-total">—</div>
+          <div class="stat-lbl">إجمالي</div>
         </div>
         <div class="stat-box">
-          <div class="stat-number success" id="stat-unique">—</div>
-          <div class="stat-label">فريدة</div>
+          <div class="stat-num ok" id="s-unique">—</div>
+          <div class="stat-lbl">فريدة</div>
         </div>
         <div class="stat-box">
-          <div class="stat-number danger" id="stat-removed">—</div>
-          <div class="stat-label">محذوفة</div>
+          <div class="stat-num bad" id="s-removed">—</div>
+          <div class="stat-lbl">محذوفة</div>
         </div>
       </div>
     </div>
 
     <!-- Output -->
-    <div class="card-section">
+    <div class="section">
       <div class="result-header">
-        <label class="field-label" style="margin-bottom:0;" for="output">النتيجة النهائية</label>
-        <span class="badge" id="unique-badge">0 اسم</span>
+        <span class="label" style="margin-bottom:0;">النتيجة النهائية</span>
+        <span class="badge" id="badge">0 اسم</span>
       </div>
-      <textarea id="output" rows="8" readonly></textarea>
-      <div class="copy-feedback" id="copy-msg">تم النسخ بنجاح</div>
+      <textarea id="output" readonly></textarea>
+      <div class="copy-ok" id="copy-msg">تم النسخ بنجاح ✓</div>
     </div>
 
-    <!-- Copy action -->
-    <div class="actions">
-      <button class="btn btn-primary" id="copy-btn" onclick="copyResult()">نسخ القائمة كاملة</button>
+    <!-- Copy button -->
+    <div class="actions-bar">
+      <button class="btn btn-primary" type="button" id="copy-btn" onclick="copyResult()">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        نسخ القائمة كاملة
+      </button>
     </div>
 
   </div>
@@ -390,7 +384,7 @@
     if (!raw) return;
 
     let names = raw.includes(',') ? raw.split(',') : raw.split('\n');
-    names = names.map(n => n.trim()).filter(n => n.length > 0);
+    names = names.map(n => n.trim()).filter(Boolean);
 
     const total = names.length;
     const seen = new Map();
@@ -398,33 +392,35 @@
     const unique = [...seen.values()];
     const removed = total - unique.length;
 
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-unique').textContent = unique.length;
-    document.getElementById('stat-removed').textContent = removed;
-    document.getElementById('unique-badge').textContent = unique.length + ' اسم';
-    document.getElementById('output').value = unique.join('\n');
-    document.getElementById('results-section').style.display = 'block';
+    document.getElementById('s-total').textContent   = total;
+    document.getElementById('s-unique').textContent  = unique.length;
+    document.getElementById('s-removed').textContent = removed;
+    document.getElementById('badge').textContent     = unique.length + ' اسم';
+    document.getElementById('output').value          = unique.join('\n');
     document.getElementById('copy-msg').classList.remove('show');
+
+    const r = document.getElementById('results');
+    r.style.display = 'block';
   }
 
   function copyResult() {
     const out = document.getElementById('output');
     out.select();
-    document.execCommand('copy');
+    try { document.execCommand('copy'); } catch(e) {}
     const msg = document.getElementById('copy-msg');
-    msg.classList.add('show');
     const btn = document.getElementById('copy-btn');
-    btn.textContent = 'تم النسخ ✓';
+    msg.classList.add('show');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M20 6L9 17l-5-5"/></svg> تم النسخ';
     setTimeout(() => {
       msg.classList.remove('show');
-      btn.textContent = 'نسخ القائمة كاملة';
-    }, 2200);
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> نسخ القائمة كاملة';
+    }, 2500);
   }
 
   function clearAll() {
-    document.getElementById('input').value = '';
+    document.getElementById('input').value  = '';
     document.getElementById('output').value = '';
-    document.getElementById('results-section').style.display = 'none';
+    document.getElementById('results').style.display = 'none';
   }
 </script>
 
