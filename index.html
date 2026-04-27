@@ -33,14 +33,14 @@
 
 <div class="header">
   <h1 style="font-size: 24px;">مزيل التكرار (أسماء + أرقام)</h1>
-  <p style="color: #6A6760; font-size: 14px;">نظّم قائمتك وصدرها لملف إكسل بضغطة زر</p>
+  <p style="color: #6A6760; font-size: 14px;">نظّم قائمتك وصدرها لملف إكسل أو انسخها مباشرة</p>
 </div>
 
 <div class="card">
   <div class="section">
     <div class="grid">
       <div>
-        <label>قائمة الأسماء</label>
+        <label>قائمة الأسماء (اختياري)</label>
         <textarea id="namesInput" placeholder="أحمد...&#10;خالد..."></textarea>
       </div>
       <div>
@@ -74,10 +74,16 @@
 
 <script>
   let finalData = [];
+  let isNamesEmpty = true;
 
   function process() {
-    const names = document.getElementById('namesInput').value.trim().split('\n');
-    const phones = document.getElementById('phonesInput').value.trim().split('\n');
+    const namesRaw = document.getElementById('namesInput').value.trim();
+    const phonesRaw = document.getElementById('phonesInput').value.trim();
+    
+    isNamesEmpty = namesRaw === "";
+    
+    const names = namesRaw.split('\n');
+    const phones = phonesRaw.split('\n');
     const seen = new Set();
     finalData = [];
     const tbody = document.getElementById('resBody');
@@ -85,35 +91,48 @@
 
     const max = Math.max(names.length, phones.length);
     for (let i = 0; i < max; i++) {
-      let n = (names[i] || "بدون اسم").trim();
+      let n = (names[i] || "").trim();
       let p = (phones[i] || "").trim();
 
-      if (p !== "" && !seen.has(p)) {
-        seen.add(p);
+      // إزالة أي رموز غريبة أو مسافات إضافية من الرقم للتحقق من التكرار
+      let cleanPhone = p.replace(/[\s\u200B-\u200D\uFEFF]/g, '');
+
+      if (cleanPhone !== "" && !seen.has(cleanPhone)) {
+        seen.add(cleanPhone);
         finalData.push({name: n, phone: p});
-        tbody.innerHTML += `<tr><td>${n}</td><td>${p}</td></tr>`;
+        tbody.innerHTML += `<tr><td>${n || '<span style="color:#A09D97">بدون اسم</span>'}</td><td>${p}</td></tr>`;
       }
     }
     document.getElementById('results').style.display = 'block';
   }
 
   function copyText() {
-    let text = finalData.map(item => `${item.name}\t${item.phone}`).join('\n');
-    navigator.clipboard.writeText(text);
-    alert("تم النسخ بنجاح");
+    let textToCopy = "";
+    
+    if (isNamesEmpty) {
+      // إذا كانت الأسماء فارغة، انسخ الأرقام فقط
+      textToCopy = finalData.map(item => item.phone).join('\n');
+    } else {
+      // إذا كان هناك أسماء، انسخ الاسم مع الرقم (بينهما فاصل Tab)
+      textToCopy = finalData.map(item => `${item.name}\t${item.phone}`).join('\n');
+    }
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      alert(isNamesEmpty ? "تم نسخ الأرقام فقط بنجاح" : "تم نسخ الأسماء والأرقام بنجاح");
+    });
   }
 
   function exportExcel() {
-    // ملف CSV يدعم العربية مع فصل الأعمدة بشكل صحيح لإكسل
     let csvContent = "\uFEFFالاسم,الرقم\n";
     finalData.forEach(item => {
+      // إكسل يحتاج الكوتيشن " " لضمان عدم تداخل الفواصل داخل البيانات
       csvContent += `"${item.name}","${item.phone}"\n`;
     });
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `قائمة_مرتبة_${new Date().toLocaleDateString()}.csv`;
+    link.download = `قائمة_مرتبة_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
     link.click();
   }
 </script>
