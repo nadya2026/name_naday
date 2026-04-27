@@ -3,62 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مزيل التكرار المطور</title>
+<title>مزيل التكرار الاحترافي</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F0EDE6; --surface: #FAFAF8; --border: #D8D4CB;
-    --text: #18170F; --accent: #1E5C3A; --danger: #8C1F2E;
+    --text: #18170F; --accent: #1D6F42;
     --font: 'IBM Plex Sans Arabic', sans-serif;
   }
   body { background: var(--bg); font-family: var(--font); color: var(--text); padding: 40px 20px; direction: rtl; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; max-width: 800px; margin: auto; overflow: hidden; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; max-width: 800px; margin: auto; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
   .header { text-align: center; padding: 30px 20px; }
   .section { padding: 20px 30px; border-top: 1px solid #E4E0D8; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  label { display: block; font-size: 12px; font-weight: 600; color: #A09D97; margin-bottom: 8px; }
-  textarea { width: 100%; height: 180px; background: #EEEAE3; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-family: var(--font); resize: none; outline: none; }
-  .actions { display: flex; justify-content: center; gap: 10px; padding: 20px; background: #EEEAE3; }
-  .btn { padding: 10px 20px; border-radius: 10px; cursor: pointer; border: 1.5px solid var(--border); font-weight: 500; font-family: var(--font); transition: 0.2s; }
-  .btn-primary { background: var(--text); color: white; }
-  .btn-excel { background: #1D6F42; color: white; border-color: #1D6F42; }
+  label { display: block; font-size: 12px; font-weight: 600; color: #A09D97; margin-bottom: 8px; text-transform: uppercase; }
+  textarea { width: 100%; height: 180px; background: #EEEAE3; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-family: var(--font); resize: none; outline: none; transition: 0.2s; }
+  textarea:focus { background: #fff; border-color: var(--text); }
+  .actions { display: flex; justify-content: center; gap: 12px; padding: 20px; background: #EEEAE3; }
+  .btn { padding: 12px 24px; border-radius: 10px; cursor: pointer; border: 1.5px solid var(--border); font-weight: 600; font-family: var(--font); transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary { background: var(--text); color: white; border-color: var(--text); }
+  .btn-excel { background: var(--accent); color: white; border-color: var(--accent); }
   .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active { transform: scale(0.98); }
   table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
   th, td { padding: 12px; text-align: right; border-bottom: 1px solid #D8D4CB; }
-  th { color: #6A6760; font-weight: 600; }
-  #results { display: none; }
+  th { color: #6A6760; background: rgba(0,0,0,0.02); }
+  #results { display: none; animation: fadeIn 0.4s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1 style="font-size: 24px;">مزيل التكرار (أسماء + أرقام)</h1>
-  <p style="color: #6A6760; font-size: 14px;">نظّم قائمتك وصدرها لملف إكسل أو انسخها مباشرة</p>
+  <h1 style="font-size: 26px; margin-bottom: 10px;">مزيل التكرار (إكسل مرتب)</h1>
+  <p style="color: #6A6760; font-size: 15px;">يتم فرز الأسماء والأرقام في أعمدة مستقلة تماماً</p>
 </div>
 
 <div class="card">
   <div class="section">
     <div class="grid">
       <div>
-        <label>قائمة الأسماء (اختياري)</label>
-        <textarea id="namesInput" placeholder="أحمد...&#10;خالد..."></textarea>
+        <label>قائمة الأسماء</label>
+        <textarea id="namesInput" placeholder="الصق الأسماء هنا..."></textarea>
       </div>
       <div>
         <label>قائمة الأرقام</label>
-        <textarea id="phonesInput" placeholder="050...&#10;055..."></textarea>
+        <textarea id="phonesInput" placeholder="الصق الأرقام هنا..."></textarea>
       </div>
     </div>
   </div>
 
   <div class="actions">
-    <button class="btn" onclick="location.reload()">مسح</button>
-    <button class="btn btn-primary" onclick="process()">إزالة التكرار</button>
+    <button class="btn" onclick="location.reload()">تفريغ</button>
+    <button class="btn btn-primary" onclick="process()">بدء المعالجة وإزالة التكرار</button>
   </div>
 
   <div id="results">
     <div class="section">
-      <label>القائمة المنقحة</label>
-      <div style="max-height: 250px; overflow-y: auto;">
+      <label>مراجعة البيانات قبل التصدير</label>
+      <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px;">
         <table>
           <thead><tr><th>الاسم</th><th>الرقم</th></tr></thead>
           <tbody id="resBody"></tbody>
@@ -67,7 +70,7 @@
     </div>
     <div class="actions">
       <button class="btn" onclick="copyText()">نسخ النص</button>
-      <button class="btn btn-excel" onclick="exportExcel()">تصدير Excel مرتب</button>
+      <button class="btn btn-excel" onclick="exportExcel()">تصدير لملف Excel مرتب</button>
     </div>
   </div>
 </div>
@@ -81,58 +84,54 @@
     const phonesRaw = document.getElementById('phonesInput').value.trim();
     
     isNamesEmpty = namesRaw === "";
+    const names = namesRaw ? namesRaw.split('\n') : [];
+    const phones = phonesRaw ? phonesRaw.split('\n') : [];
     
-    const names = namesRaw.split('\n');
-    const phones = phonesRaw.split('\n');
     const seen = new Set();
     finalData = [];
     const tbody = document.getElementById('resBody');
     tbody.innerHTML = '';
 
     const max = Math.max(names.length, phones.length);
+    if (max === 0) return alert("يرجى إدخال بيانات أولاً");
+
     for (let i = 0; i < max; i++) {
       let n = (names[i] || "").trim();
       let p = (phones[i] || "").trim();
 
-      // إزالة أي رموز غريبة أو مسافات إضافية من الرقم للتحقق من التكرار
-      let cleanPhone = p.replace(/[\s\u200B-\u200D\uFEFF]/g, '');
+      // تنظيف الرقم من المسافات والرموز المخفية للتحقق من التكرار
+      let cleanPhone = p.replace(/[^\d+]/g, ''); 
 
-      if (cleanPhone !== "" && !seen.has(cleanPhone)) {
+      if (p !== "" && !seen.has(cleanPhone)) {
         seen.add(cleanPhone);
         finalData.push({name: n, phone: p});
-        tbody.innerHTML += `<tr><td>${n || '<span style="color:#A09D97">بدون اسم</span>'}</td><td>${p}</td></tr>`;
+        tbody.innerHTML += `<tr><td>${n || '<span style="color:#A09D97">---</span>'}</td><td>${p}</td></tr>`;
       }
     }
     document.getElementById('results').style.display = 'block';
   }
 
   function copyText() {
-    let textToCopy = "";
-    
-    if (isNamesEmpty) {
-      // إذا كانت الأسماء فارغة، انسخ الأرقام فقط
-      textToCopy = finalData.map(item => item.phone).join('\n');
-    } else {
-      // إذا كان هناك أسماء، انسخ الاسم مع الرقم (بينهما فاصل Tab)
-      textToCopy = finalData.map(item => `${item.name}\t${item.phone}`).join('\n');
-    }
+    let textToCopy = isNamesEmpty 
+      ? finalData.map(item => item.phone).join('\n')
+      : finalData.map(item => `${item.name}\t${item.phone}`).join('\n');
 
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      alert(isNamesEmpty ? "تم نسخ الأرقام فقط بنجاح" : "تم نسخ الأسماء والأرقام بنجاح");
-    });
+    navigator.clipboard.writeText(textToCopy).then(() => alert("تم النسخ!"));
   }
 
   function exportExcel() {
-    let csvContent = "\uFEFFالاسم,الرقم\n";
+    // السر هنا: استخدام الفاصلة المنقوطة لضمان تقسيم الأعمدة في Excel
+    let csvContent = "\uFEFFالاسم;الرقم\n";
     finalData.forEach(item => {
-      // إكسل يحتاج الكوتيشن " " لضمان عدم تداخل الفواصل داخل البيانات
-      csvContent += `"${item.name}","${item.phone}"\n`;
+      // إزالة أي فواصل داخل النصوص لكي لا تخرب الملف
+      let cleanName = item.name.replace(/;/g, ' ');
+      csvContent += `${cleanName};${item.phone}\n`;
     });
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `قائمة_مرتبة_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`;
+    link.download = `قائمة_عملاء_${new Date().getTime()}.csv`;
     link.click();
   }
 </script>
