@@ -1,89 +1,121 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>مزيل التكرار - أسماء وأرقام</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; direction: rtl; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        textarea { width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: none; box-sizing: border-box; }
-        .actions { text-align: center; margin-top: 20px; }
-        button { padding: 10px 25px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; margin: 5px; }
-        .btn-process { background: #2ecc71; color: white; }
-        .btn-excel { background: #27ae60; color: white; }
-        .btn-clear { background: #e74c3c; color: white; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
-        th { background: #f8f9fa; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مزيل التكرار المطور</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F0EDE6; --surface: #FAFAF8; --border: #D8D4CB;
+    --text: #18170F; --accent: #1E5C3A; --danger: #8C1F2E;
+    --font: 'IBM Plex Sans Arabic', sans-serif;
+  }
+  body { background: var(--bg); font-family: var(--font); color: var(--text); padding: 40px 20px; direction: rtl; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; max-width: 800px; margin: auto; overflow: hidden; }
+  .header { text-align: center; padding: 30px 20px; }
+  .section { padding: 20px 30px; border-top: 1px solid #E4E0D8; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  label { display: block; font-size: 12px; font-weight: 600; color: #A09D97; margin-bottom: 8px; }
+  textarea { width: 100%; height: 180px; background: #EEEAE3; border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-family: var(--font); resize: none; outline: none; }
+  .actions { display: flex; justify-content: center; gap: 10px; padding: 20px; background: #EEEAE3; }
+  .btn { padding: 10px 20px; border-radius: 10px; cursor: pointer; border: 1.5px solid var(--border); font-weight: 500; font-family: var(--font); transition: 0.2s; }
+  .btn-primary { background: var(--text); color: white; }
+  .btn-excel { background: #1D6F42; color: white; border-color: #1D6F42; }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+  th, td { padding: 12px; text-align: right; border-bottom: 1px solid #D8D4CB; }
+  th { color: #6A6760; font-weight: 600; }
+  #results { display: none; }
+</style>
 </head>
 <body>
 
-<div class="container">
+<div class="header">
+  <h1 style="font-size: 24px;">مزيل التكرار (أسماء + أرقام)</h1>
+  <p style="color: #6A6760; font-size: 14px;">نظّم قائمتك وصدرها لملف إكسل بضغطة زر</p>
+</div>
+
+<div class="card">
+  <div class="section">
     <div class="grid">
-        <div>
-            <label>قائمة الأسماء:</label>
-            <textarea id="names" placeholder="ضع الأسماء هنا (اسم في كل سطر)"></textarea>
-        </div>
-        <div>
-            <label>قائمة الأرقام:</label>
-            <textarea id="phones" placeholder="ضع الأرقام هنا (رقم في كل سطر)"></textarea>
-        </div>
+      <div>
+        <label>قائمة الأسماء</label>
+        <textarea id="namesInput" placeholder="أحمد...&#10;خالد..."></textarea>
+      </div>
+      <div>
+        <label>قائمة الأرقام</label>
+        <textarea id="phonesInput" placeholder="050...&#10;055..."></textarea>
+      </div>
     </div>
+  </div>
 
-    <div class="actions">
-        <button class="btn-process" onclick="process()">إزالة التكرار</button>
-        <button class="btn-clear" onclick="location.reload()">مسح الكل</button>
-        <button id="excelBtn" class="btn-excel" style="display:none;" onclick="exportExcel()">تصدير Excel</button>
-    </div>
+  <div class="actions">
+    <button class="btn" onclick="location.reload()">مسح</button>
+    <button class="btn btn-primary" onclick="process()">إزالة التكرار</button>
+  </div>
 
-    <div id="resultArea" style="display:none;">
-        <h3>النتائج (تم حذف المكرر بناءً على الرقم):</h3>
-        <table id="resTable">
-            <thead><tr><th>الاسم</th><th>الرقم</th></tr></thead>
-            <tbody id="resBody"></tbody>
+  <div id="results">
+    <div class="section">
+      <label>القائمة المنقحة</label>
+      <div style="max-height: 250px; overflow-y: auto;">
+        <table>
+          <thead><tr><th>الاسم</th><th>الرقم</th></tr></thead>
+          <tbody id="resBody"></tbody>
         </table>
+      </div>
     </div>
+    <div class="actions">
+      <button class="btn" onclick="copyText()">نسخ النص</button>
+      <button class="btn btn-excel" onclick="exportExcel()">تصدير Excel مرتب</button>
+    </div>
+  </div>
 </div>
 
 <script>
-    let uniqueData = [];
+  let finalData = [];
 
-    function process() {
-        const nameList = document.getElementById('names').value.split('\n');
-        const phoneList = document.getElementById('phones').value.split('\n');
-        const seen = new Set();
-        uniqueData = [];
-        const tbody = document.getElementById('resBody');
-        tbody.innerHTML = '';
+  function process() {
+    const names = document.getElementById('namesInput').value.trim().split('\n');
+    const phones = document.getElementById('phonesInput').value.trim().split('\n');
+    const seen = new Set();
+    finalData = [];
+    const tbody = document.getElementById('resBody');
+    tbody.innerHTML = '';
 
-        const length = Math.max(nameList.length, phoneList.length);
+    const max = Math.max(names.length, phones.length);
+    for (let i = 0; i < max; i++) {
+      let n = (names[i] || "بدون اسم").trim();
+      let p = (phones[i] || "").trim();
 
-        for (let i = 0; i < length; i++) {
-            let n = (nameList[i] || "").trim();
-            let p = (phoneList[i] || "").trim();
-
-            if (p !== "" && !seen.has(p)) {
-                seen.add(p);
-                uniqueData.push({n, p});
-                tbody.innerHTML += `<tr><td>${n}</td><td>${p}</td></tr>`;
-            }
-        }
-
-        document.getElementById('resultArea').style.display = 'block';
-        document.getElementById('excelBtn').style.display = 'inline-block';
+      if (p !== "" && !seen.has(p)) {
+        seen.add(p);
+        finalData.push({name: n, phone: p});
+        tbody.innerHTML += `<tr><td>${n}</td><td>${p}</td></tr>`;
+      }
     }
+    document.getElementById('results').style.display = 'block';
+  }
 
-    function exportExcel() {
-        let csv = "\uFEFFالاسم,الرقم\n";
-        uniqueData.forEach(item => { csv += `"${item.n}","${item.p}"\n`; });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "contacts.csv";
-        link.click();
-    }
+  function copyText() {
+    let text = finalData.map(item => `${item.name}\t${item.phone}`).join('\n');
+    navigator.clipboard.writeText(text);
+    alert("تم النسخ بنجاح");
+  }
+
+  function exportExcel() {
+    // ملف CSV يدعم العربية مع فصل الأعمدة بشكل صحيح لإكسل
+    let csvContent = "\uFEFFالاسم,الرقم\n";
+    finalData.forEach(item => {
+      csvContent += `"${item.name}","${item.phone}"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `قائمة_مرتبة_${new Date().toLocaleDateString()}.csv`;
+    link.click();
+  }
 </script>
 
 </body>
